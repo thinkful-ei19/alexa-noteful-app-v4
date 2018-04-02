@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
 
 const User = require('../models/user');
 
@@ -26,7 +26,7 @@ router.post('/users', (req, res, next) => {
   const nonStringFields = stringFields.find(field => field in req.body && typeof req.body[field] !== 'string');
   
   if(nonStringFields) {
-    const err = new Error('Incorrect field type: expected string');
+    const err = new Error(`Field: '${nonStringFields}' must be type String`);
     err.status = 422;
     return next(err);
   }
@@ -37,7 +37,7 @@ router.post('/users', (req, res, next) => {
   const nonTrimmedField = explicityTrimmedFields.find(field => req.body[field].trim() !== req.body[field]);
 
   if (nonTrimmedField) {
-    const err = new Error('Cannot start or end with whitespace');
+    const err = new Error(`Field: '${nonTrimmedField}' cannot start or end with whitespace`);
     err.status = 422;
     return next(err);
   }
@@ -100,10 +100,5 @@ router.post('/users', (req, res, next) => {
       next(err);
     });
 }); 
-
-
-
-
-
 
 module.exports = router;

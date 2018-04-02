@@ -6,14 +6,12 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 
 const localStrategy = require('./passport/local');
-
 const { PORT, MONGODB_URI } = require('./config');
 
 const notesRouter = require('./routes/notes');
 const foldersRouter = require('./routes/folders');
 const tagsRouter = require('./routes/tags');
 const usersRouter = require('./routes/users');
-
 const authRouter = require('./routes/auth');
 
 // Create an Express application
