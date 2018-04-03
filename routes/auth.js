@@ -1,7 +1,11 @@
 'use strict';
 
+
 const express = require('express');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
+
+const { JWT_SECRET, JWT_EXPIRY } = require('../config');
 
 const router = express.Router();
 
@@ -11,10 +15,17 @@ const localAuth = passport.authenticate('local', options);
 
 // ===== Protected endpoint ===== //
 router.post('/login', localAuth, function (req, res) {
-  console.log('making a post request to /api/login');
-  return res.json(req.user);
+  const authToken = createAuthToken(req.user);
+  return res.json({authToken});
 });
 
+//generate a JWT
+function createAuthToken(user) {
+  return jwt.sign({ user }, JWT_SECRET, {
+    subject: user.username,
+    expiresIn: JWT_EXPIRY
+  });
+}
 
 module.exports = router;
 
