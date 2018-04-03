@@ -9,6 +9,8 @@ const passport = require('passport');
 const localStrategy = require('./passport/local');
 const { PORT, MONGODB_URI } = require('./config');
 
+const jwtStrategy = require('./passport/jwt');
+
 const notesRouter = require('./routes/notes');
 const foldersRouter = require('./routes/folders');
 const tagsRouter = require('./routes/tags');
@@ -31,13 +33,20 @@ app.use(express.json());
 
 //Configure Passport to utilize the strategy
 passport.use(localStrategy);
+passport.use(jwtStrategy);
+
+// Mount routers
+app.use('/api', usersRouter);
+app.use('/api', authRouter);
+
+// Endpoints below this require a valid JWT
+app.use(passport.authenticate('jwt', { session: false, failWithError :true}));
 
 // Mount routers
 app.use('/api', notesRouter);
 app.use('/api', foldersRouter);
 app.use('/api', tagsRouter);
-app.use('/api', usersRouter);
-app.use('/api', authRouter);
+
 
 // Catch-all 404
 app.use(function (req, res, next) {
