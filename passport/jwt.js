@@ -12,3 +12,5 @@ const options = {
 const jwtStrategy = new JwtStrategy(options, (payload, done) => {
   done(null, payload.user);
 });
+
+module.exports = jwtStrategy;
