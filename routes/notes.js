@@ -103,6 +103,9 @@ router.put('/notes/:id', (req, res, next) => {
   const { id } = req.params;
   const { title, content, folderId, tags } = req.body;
 
+  const updateItem = { title, content, tags };
+  const options = { new: true };
+
   /***** Never trust users - validate input *****/
   if (!title) {
     const err = new Error('Missing `title` in request body');
@@ -130,9 +133,6 @@ router.put('/notes/:id', (req, res, next) => {
     });
   }
 
-
-  const updateItem = { title, content, tags };
-  const options = { new: true };
 
   Note.findByIdAndUpdate(id, updateItem, options)
     .populate('tags')
