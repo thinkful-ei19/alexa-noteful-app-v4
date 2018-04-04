@@ -71,6 +71,7 @@ router.get('/notes/:id', (req, res, next) => {
 /* ========== POST/CREATE AN ITEM ========== */
 router.post('/notes', (req, res, next) => {
   const { title, content, folderId, tags } = req.body;
+  const userId = req.user.id;
 
   /***** Never trust users - validate input *****/
   if (!title) {
@@ -89,7 +90,7 @@ router.post('/notes', (req, res, next) => {
     });
   }
 
-  const newItem = { title, content, folderId, tags };
+  const newItem = { title, content, folderId, tags, userId };
 
   Note.create(newItem)
     .then(result => {
