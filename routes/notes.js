@@ -105,8 +105,9 @@ router.post('/notes', (req, res, next) => {
 router.put('/notes/:id', (req, res, next) => {
   const { id } = req.params;
   const { title, content, folderId, tags } = req.body;
+  const userId = req.user.id;
 
-  const updateItem = { title, content, tags };
+  const updateItem = { title, content, tags, userId };
   const options = { new: true };
 
   /***** Never trust users - validate input *****/
@@ -154,10 +155,15 @@ router.put('/notes/:id', (req, res, next) => {
 /* ========== DELETE/REMOVE A SINGLE ITEM ========== */
 router.delete('/notes/:id', (req, res, next) => {
   const { id } = req.params;
-
-  Note.findByIdAndRemove(id)
-    .then(() => {
-      res.status(204).end();
+  const userId = req.user.id;
+  
+  Note.findOneAndRemove( {_id: id, userId} )
+    .then(result => {
+      if (result) {
+        res.status(204).end();
+      } else {
+        next();
+      }
     })
     .catch(err => {
       next(err);
