@@ -6,6 +6,8 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Note = require('../models/note');
+const Tag = require('../models/tag');
+const Folder = require('../models/folder');
 
 /* ========== GET/READ ALL ITEMS ========== */
 router.get('/notes', (req, res, next) => {
@@ -72,6 +74,7 @@ router.get('/notes/:id', (req, res, next) => {
 router.post('/notes', (req, res, next) => {
   const { title, content, folderId, tags } = req.body;
   const userId = req.user.id;
+  const newItem = { title, content, folderId, tags, userId };
 
   /***** Never trust users - validate input *****/
   if (!title) {
@@ -86,11 +89,47 @@ router.post('/notes', (req, res, next) => {
         const err = new Error('The `id` is not valid');
         err.status = 400;
         return next(err);
+      } else {
+        Tag.findOne({ _id: tag, userId})
+          .then(result => {
+            if (!result) {
+              const err = new Error('This user does not have this tag');
+              err.status = 400;
+              return next(err);
+            }
+          });
       }
     });
   }
 
-  const newItem = { title, content, folderId, tags, userId };
+  // if (folderId) {
+  //   if (!mongoose.Types.ObjectId.isValid(folderId)) {
+  //     const err = new Error('The `id` is not valid');
+  //     err.status = 400;
+  //     return next(err);
+  //   } else {
+  //     Folder.findOne({ _id: folderId, userId})
+  //       .then(result => {
+  //         if (!result) {
+  //           const err = new Error('This user does not have this folder');
+  //           err.status = 400;
+  //           return next(err);
+  //         }
+  //       });
+  //   }
+  // }
+
+  if (folderId) {
+    Folder.findOne({ _id: folderId, userId})
+      .then(result => {
+        if (!result) {
+          const err = new Error('This user does not have this folder');
+          err.status = 400;
+          return next(err);
+        }
+      });
+  }
+
 
   Note.create(newItem)
     .then(result => {
@@ -127,12 +166,32 @@ router.put('/notes/:id', (req, res, next) => {
     updateItem.folderId = folderId;
   }
 
+  if (folderId) {
+    Folder.findOne({ _id: folderId, userId})
+      .then(result => {
+        if (!result) {
+          const err = new Error('This user does not have this folder');
+          err.status = 400;
+          return next(err);
+        }
+      });
+  }
+  
   if (tags) {
     tags.forEach((tag) => {
       if (!mongoose.Types.ObjectId.isValid(tag)) {
         const err = new Error('The `id` is not valid');
         err.status = 400;
         return next(err);
+      } else {
+        Tag.findOne({ _id: tag, userId })
+          .then(result => {
+            if (!result) {
+              const err = new Error('This user does not have this tag');
+              err.status = 400;
+              return next(err);
+            }
+          });
       }
     });
   }
