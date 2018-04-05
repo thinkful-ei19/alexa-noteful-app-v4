@@ -26,6 +26,7 @@ describe('Noteful API - Users', function () {
 
   beforeEach(function () {
     // noop
+    return User.ensureIndexes();
   });
 
   afterEach(function () {
@@ -42,11 +43,13 @@ describe('Noteful API - Users', function () {
         const testUser = { username, password, fullname };
 
         let res;
-        chai.request(app).post('/api/users').send(testUser)
+        return chai.request(app)
+          .post('/api/users')
+          .send(testUser)
           .then(_res => {
             res = _res;
             expect(res).to.have.status(201);
-            expect(res.body).to.be.an('object');
+            expect(res.body).to.be.a('object');
             expect(res.body).to.have.keys('id', 'username', 'fullname');
 
             expect(res.body.id).to.exist;
@@ -57,7 +60,7 @@ describe('Noteful API - Users', function () {
           })
           .then(user => {
             expect(user).to.exist;
-            expect(user._id).to.equal(res.body.id);
+            expect(user.id).to.equal(res.body.id);
             expect(user.fullname).to.equal(testUser.fullname);
             return user.validatePassword(password);
           })
@@ -200,6 +203,7 @@ describe('Noteful API - Users', function () {
             expect(res.body.message).to.equal('Field: \'password\' must be at most 72 characters long');
           });
       });
+      
       it('Should reject users with duplicate username', function() {
         const testUser = {
           username,
@@ -214,7 +218,7 @@ describe('Noteful API - Users', function () {
         })
           .then(() => {
             // Try to create a second user with the same username
-            chai.request(app)
+            return chai.request(app)
               .post('/api/users')
               .send(testUser)
               .catch(err => err.response)
@@ -252,37 +256,37 @@ describe('Noteful API - Users', function () {
           }); 
       });
     });
+    //delete this
+    // describe('GET', function () {
+    //   it('Should return an empty array initially', function () {
+    //     return chai.request(app).get('/api/users')
+    //       .then(res => {
+    //         expect(res).to.have.status(200);
+    //         expect(res.body).to.be.an('array');
+    //         expect(res.body).to.have.length(0);
+    //       });
+    //   });
+    //   it('Should return an array of users', function () {
+    //     const testUser0 = {
+    //       username: `${username}`,
+    //       password: `${password}`,
+    //       fullname: ` ${fullname} `
+    //     };
+    //     const testUser1 = {
+    //       username: `${username}1`,
+    //       password: `${password}1`,
+    //       fullname: `${fullname}1`
+    //     };
+    //     const testUser2 = {
+    //       username: `${username}2`,
+    //       password: `${password}2`,
+    //       fullname: `${fullname}2`
+    //     };
 
-    describe('GET', function () {
-      it('Should return an empty array initially', function () {
-        return chai.request(app).get('/api/users')
-          .then(res => {
-            expect(res).to.have.status(200);
-            expect(res.body).to.be.an('array');
-            expect(res.body).to.have.length(0);
-          });
-      });
-      it('Should return an array of users', function () {
-        const testUser0 = {
-          username: `${username}`,
-          password: `${password}`,
-          fullname: ` ${fullname} `
-        };
-        const testUser1 = {
-          username: `${username}1`,
-          password: `${password}1`,
-          fullname: `${fullname}1`
-        };
-        const testUser2 = {
-          username: `${username}2`,
-          password: `${password}2`,
-          fullname: `${fullname}2`
-        };
-
-        /**
-         * CREATE THE REQUEST AND MAKE ASSERTIONS
-         */
-      });
-    });
+    //     /**
+    //      * CREATE THE REQUEST AND MAKE ASSERTIONS
+    //      */
+    //   });
+    // });
   });
 });
