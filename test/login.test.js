@@ -69,14 +69,30 @@ describe('Noteful API - Login', function() {
       }); 
 
       it('Should reject request with no credentials', function() {
-        //const testUser = {};
+        const testUser = {};
         return chai.request(app)
           .post('/api/login')
-          .send()
+          .send(testUser)
           .catch(err => err.response)
           .then(res => {
             expect(res).to.have.status(400);
             expect(res.body.message).to.equal('Bad Request');
+          });
+      });
+
+      it('Should reject requests with incorrect usernames', function() {
+        const testUser = { 
+          username: 'johnDoe',
+          password: 'password10'
+        };
+        return chai.request(app)
+          .post('/api/login')
+          .send(testUser)
+          .catch(err => err.response)
+          .then(res => {
+            expect(res).to.have.status(401);
+            expect(res.body.message).to.equal('Unauthorized');
+
           });
       });
     });
