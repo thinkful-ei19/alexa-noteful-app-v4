@@ -92,7 +92,20 @@ describe('Noteful API - Login', function() {
           .then(res => {
             expect(res).to.have.status(401);
             expect(res.body.message).to.equal('Unauthorized');
-
+          });
+      });
+      it('Should reject requests with incorrect passwords', function() {
+        const testUser = { 
+          username: 'user0',
+          password: 'incorrect'
+        };
+        return chai.request(app)
+          .post('/api/login')
+          .send(testUser)
+          .catch(err => err.response)
+          .then(res => {
+            expect(res).to.have.status(401);
+            expect(res.body.message).to.equal('Unauthorized');
           });
       });
     });
