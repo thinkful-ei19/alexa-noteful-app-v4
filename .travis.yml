@@ -1,10 +1,10 @@
 language: node_js
 node_js: node
 services: mongodb
-# deploy:
-#     provider: heroku
-#     api_key:
-#       secure: [YOUR-API-KEY]
-#     app: [YOUR-APP-NAME]
-#     on:
-#       repo: [YOUR-APP-REPO]
+deploy:
+  provider: heroku
+  api_key:
+    secure: QqrHlNMlJDKHk0aIVqO78y2dg+EGYCI8tkNP5jPM3170QTuD8aMzU2l2aIrvojBqTLFKibep+rwly4KhGL63Iilaw6CHZrvBCOM7qUVgk/CITh6fI1urY7rhs7bFj12w0jxMhEafrSWUjcJZfVAwjPF9SntFfrTieP4pd3iPEot04ZHdX7UnEsTX/EtsxmEMY9oIpMcxV514EvJ5SHff9sWumh7kJ+wHXim843+AjnQc6i6Uw8cRQtz/bN3gSDAir6sKpZrknEGtd8Po8E60IlKV9C8xsi3xuAuQCIKgVMIFwad6/JnhAK6O30bxQUUXeUin93yeim/1OW4yRXPWqXdnJ8SKbkrU68Tkvp7ZXATfdnNP/pEn+ZcSjgEhr5LblJNeaT2uQA0ThcQQZ/udMrjYY44NPh1uS73nksh+TCOoibRVznlUz0bPGoSZ4ctGegbo4wWj/u/Hp7B22vzCk13o2IYf7Kl1j2PHObn0L3lyzKLdSNyvBqHfp6e3dhGMB/pzjWuD8uBP0i8waSv8qd/E5i3J2TXk5/aPABy8q0FqRjTz+Q8xwmPFvxEje5X3/VflyBeG/L7IKEAFZZHCrK7Or/8qczeQ49sSBudLzLrnLOsx4xbQfDW+xO5abpefx3xfqer5cttqDPP8aVvs28m7mg2K1DijM7sEKlz/3sk=
+  app: alexa-noteful-app-v4
+  on:
+    repo: thinkful-ei19/alexa-noteful-app-v4
